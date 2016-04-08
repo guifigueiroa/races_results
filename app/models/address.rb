@@ -1,10 +1,10 @@
 class Address
-  attr_reader :city, :state, :location
+  attr_accessor :city, :state, :location
 
-  def initialize(city, state, location)
+  def initialize(city=nil, state=nil, location=nil)
     @city = city
     @state = state
-    @location = Point.new(location[0], location[1])
+    @location = Point.new(location[0], location[1]) unless location.nil?
   end
 
   #creates a DB-form of the instance
@@ -15,7 +15,7 @@ class Address
   #creates an instance of the class from the DB-form of the data
   def self.demongoize(object)
     case object
-    when Hash then Address.new(object[:city], object[:state], object[:loc][:coordinates])
+    when Hash then Address.new(object[:city], object[:state], object.try(:loc).try(:coordinates))
     else nil
     end
   end
