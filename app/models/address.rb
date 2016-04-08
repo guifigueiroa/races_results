@@ -1,38 +1,38 @@
 class Address
   attr_accessor :city, :state, :location
-
-  def initialize(city=nil, state=nil, location=nil)
-    @city = city
-    @state = state
-    @location = Point.new(location[0], location[1]) unless location.nil?
+  def initialize(args=nil)
+    unless args.nil?
+      @city = args[:city]
+      @state = args[:state]
+      @location = Point.demongoize(args[:loc])
+    end
   end
 
-  #creates a DB-form of the instance
   def mongoize
-    {:city => @city, :state => @state, :loc => @location.mongoize}
+    {city: @city, state: @state, loc: @location.mongoize}
   end
 
-  #creates an instance of the class from the DB-form of the data
-  def self.demongoize(object)
+  def self.mongoize object
     case object
-    when Hash then Address.new(object[:city], object[:state], object.try(:loc).try(:coordinates))
-    else nil
+      when Address then object.mongoize
+      when nil then nil
+      when Hash then Address.new(object).mongoize
+      else object
     end
   end
 
-  #takes in all forms of the object and produces a DB-friendly form
-  def self.mongoize(object) 
+  def self.demongoize object
     case object
-    when Address then object.mongoize
-    else object
+      when Hash then Address.new(object)
+      when nil then nil
+      else object
     end
   end
-
-  #used by criteria to convert object to DB-friendly form
-  def self.evolve(object)
+  
+  def self.evolve object
     case object
-    when Address then object.mongoize
-    else object
-    end
+      when Address then object.mongoize
+      else object
+      end
   end
 end
