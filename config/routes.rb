@@ -3,6 +3,18 @@ Rails.application.routes.draw do
     post "entries" => "racers#create_entry"
   end
   resources :races
+  
+  # API routes
+  get "api/races" => "api/races#index"
+  post "api/races" => "api/races#create"
+  get "api/races/:id" => "api/races#show"
+  get "api/races/:race_id/results" => "api/races#results"
+  get "api/races/:race_id/results/:id" => "api/races#show_result"
+  get "api/racers" => "api/racers#index"
+  get "api/racers/:id" => "api/racers#show"
+  get "api/racers/:racer_id/entries" => "api/racers#entries"
+  get "api/racers/:racer_id/entries/:id" => "api/racers#show_entry"
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
