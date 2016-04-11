@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get "api/races" => "api/races#index"
   post "api/races" => "api/races#create"
   get "api/races/:id" => "api/races#show"
+  put "api/races/:id" => "api/races#update"
+  delete "api/races/:id" => "api/races#destroy"
   get "api/races/:race_id/results" => "api/races#results"
   get "api/races/:race_id/results/:id" => "api/races#show_result"
   get "api/racers" => "api/racers#index"
