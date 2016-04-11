@@ -12,9 +12,10 @@ Rails.application.routes.draw do
   patch "api/races/:id" => "api/races#update"
   delete "api/races/:id" => "api/races#destroy"
   get "api/races/:race_id/results" => "api/races#results"
-  get "api/races/:race_id/results/:id" => "api/races#show_result"
+  get "api/races/:race_id/results/:id" => "api/races#show_result", as: 'api_race_result'
+  patch "api/races/:race_id/results/:id" => "api/races#update_result"
   get "api/racers" => "api/racers#index"
-  get "api/racers/:id" => "api/racers#show"
+  get "api/racers/:id" => "api/racers#show", as: 'api_racer'
   get "api/racers/:racer_id/entries" => "api/racers#entries"
   get "api/racers/:racer_id/entries/:id" => "api/racers#show_entry"
   
