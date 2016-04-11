@@ -2,8 +2,22 @@ module Api
   class RacesController < ApplicationController
     before_action :set_race, only: [:show, :update, :destroy]
     rescue_from Mongoid::Errors::DocumentNotFound do |exception|
-      render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
+      @msg = "woops: cannot find race[#{params[:id]}]"
+      if !request.accept || request.accept == "*/*"
+        render plain: @msg , status: :not_found
+      else
+        respond_to do |format|
+          format.json { render status: :not_found, :template => "api/error_msg.json" }
+          format.xml { render status: :not_found, :template => "api/error_msg.xml" }
+        end
+      end
     end
+    rescue_from ActionView::MissingTemplate do |exception|
+      Rails.logger.debug exception
+      @msg = "woops: we do not support that content-type[#{request.accept}]"
+      render plain: @msg , status: :unsupported_media_type
+    end
+    
     protect_from_forgery with: :null_session
     
     def index
@@ -18,7 +32,7 @@ module Api
       if !request.accept || request.accept == "*/*"
         render plain: "/api/races/#{params[:id]}"
       else
-        render json: @race, status: :ok
+        render @race
       end
     end
 
