@@ -1,7 +1,7 @@
 module Api
   class RacesController < ApplicationController
-    before_action :set_race, only: [:show, :update, :destroy]
-    before_action :set_result, only: [:show_result, :update_result]
+    before_action :set_race, only: [:update, :destroy]
+    before_action :set_result, only: [:update_result]
     rescue_from Mongoid::Errors::DocumentNotFound do |exception|
       @msg = "woops: cannot find race[#{params[:id]}]"
       if !request.accept || request.accept == "*/*"
@@ -33,6 +33,7 @@ module Api
       if !request.accept || request.accept == "*/*"
         render plain: "/api/races/#{params[:id]}"
       else
+        @race = Race.find(params[:id])
         render @race
       end
     end
@@ -42,7 +43,9 @@ module Api
         render plain: "/api/races/#{params[:race_id]}/results"
       else
         @entrants = Race.find(params[:race_id]).entrants
-        render :template => "api/races/results"
+        if stale?(etag: @article, last_modified: @entrants.max(:updated_at))
+          render :template => "api/races/results"
+        end
       end
     end
 

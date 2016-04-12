@@ -46,6 +46,7 @@ feature "Module #4 URIs", :type => :routing do
              '/api/races', '/api/races/abc', '/api/races/abc/results', '/api/races/abc/results/def']
 
       uri.each { |u|
+        puts u
         page.driver.header('Accept', nil)
         page.driver.get(u)
         expect(page.status_code).to eql(200)
