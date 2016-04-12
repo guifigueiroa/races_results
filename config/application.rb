@@ -18,6 +18,7 @@ module Triresults
     
     # bootstraps mongoid within applications -- like rails console
     Mongoid.load!('./config/mongoid.yml')
+    config.eager_load_paths += %W( #{config.root}/app/services )
     
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
